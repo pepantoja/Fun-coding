@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Candidate Scorecard</title>
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --accent-weak: #e8f0ff;
+      --ok: #16a34a;
+      --warn: #ef4444;
+      --border: #e5e7eb;
+      --shadow: 0 10px 30px rgba(2, 8, 23, .06);
+      --radius: 14px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b0f19;
+        --card: #121827;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+        --accent: #60a5fa;
+        --accent-weak: #0f172a;
+        --ok: #22c55e;
+        --warn: #f87171;
+        --border: #243143;
+        --shadow: 0 10px 30px rgba(0, 0, 0, .4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 50% -60px, var(--accent-weak), transparent 60%), var(--bg);
+    }
+    .wrap{
+      max-width: 860px;
+      margin: 48px auto;
+      padding: 0 16px 32px;
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    header{
+      padding: 22px 22px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1{
+      margin: 0 0 4px;
+      font-size: 22px;
+      letter-spacing: .2px;
+    }
+    header p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .section{
+      padding: 20px 22px;
+    }
+    .grid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+    }
+    @media (max-width: 720px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .field{
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: color-mix(in hsl, var(--card) 92%, transparent);
+    }
+    .field .top{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    label{
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .muted{ color: var(--muted); font-size: 12px; }
+    .row{
+      display: grid;
+      grid-template-columns: 1fr minmax(96px, 120px);
+      gap: 10px;
+      align-items: center;
+    }
+    input[type="range"]{
+      width: 100%;
+      height: 28px;
+      appearance: none;
+      background: transparent;
+    }
+    input[type="range"]::-webkit-slider-runnable-track{
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent), var(--accent));
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 999px color-mix(in hsl, var(--accent) 12%, transparent);
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      appearance: none;
+      margin-top: -6px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
+    input[type="number"], input[type="text"], select{
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 14px;
+    }
+    .stack{ display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: color-mix(in hsl, var(--card) 92%, transparent);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px; border-radius: 999px;
+      font-weight: 600; font-size: 12px;
+    }
+    .badge.ok{ background: color-mix(in hsl, var(--ok) 18%, transparent); color: var(--ok); }
+    .badge.warn{ background: color-mix(in hsl, var(--warn) 18%, transparent); color: var(--warn); }
+    .progress{
+      width: 100%;
+      height: 14px;
+      background: color-mix(in hsl, var(--accent) 10%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress .bar{
+      height: 100%; width: 0%;
+      background: var(--accent);
+      transition: width .2s ease-out;
+    }
+    .totals{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content: space-between;
+      padding: 16px 0 6px;
+    }
+    .totals .big{
+      font-size: 26px; font-weight: 800; letter-spacing: .2px;
+    }
+    .actions{
+      display:flex; flex-wrap: wrap; gap: 10px;
+      padding-top: 10px;
+    }
+    button{
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, color-mix(in hsl, var(--card) 98%, transparent), color-mix(in hsl, var(--card) 92%, transparent));
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.primary{
+      background: var(--accent);
+      color: white;
+      border: 1px solid color-mix(in hsl, var(--accent) 75%, black);
+    }
+    footer{
+      padding: 16px 22px 22px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .sr-only{ position:absolute !important; left:-9999px !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="region" aria-labelledby="title">
+      <header>
+        <h1 id="title">Candidate Scorecard</h1>
+        <p>5 topics • Max total: <strong id="maxTotal">—</strong> points • Local only (no data leaves your browser)</p>
+      </header>
+
+      <div class="section">
+        <div class="grid" id="formGrid">
+          <div class="field" style="grid-column:1/-1">
+            <div class="top">
+              <label for="candidate">Candidate</label>
+              <span class="pill">Precision:
+                <select id="precision" aria-label="Scoring precision">
+                  <option value="1">Whole points (1)</option>
+                  <option value="0.5">0.5</option>
+                  <option value="0.25">0.25</option>
+                </select>
+              </span>
+            </div>
+            <input id="candidate" type="text" placeholder="e.g., Jordan Lee" autocomplete="off" />
+          </div>
+
+          <!-- Topic rows will be injected here -->
+        </div>
+
+        <div class="totals" aria-live="polite" aria-atomic="true">
+          <div class="stack">
+            <div class="big" id="totalText">Total: 0 / 12 (0%)</div>
+            <span id="statusBadge" class="badge warn">Below threshold</span>
+          </div>
+          <div class="stack">
+            <span class="pill">Threshold: <strong id="thresholdText">75%</strong></span>
+            <span class="pill">Precision: <span id="precisionText">1</span></span>
+          </div>
+        </div>
+
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0" aria-label="Score progress">
+          <div class="bar" id="bar"></div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="copyBtn">Copy CSV row</button>
+          <button id="downloadBtn">Download CSV row</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+      </div>
+
+      <footer>
+        Tip: rename topic labels or change maxima inside the <strong>SCORECARD_CONFIG</strong> object in the code. Host this file and paste the URL into a Notion <em>Embed</em> block to use it inside your workspace.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    /* -------------------------
+       Configuration (edit me)
+       ------------------------- */
+    const SCORECARD_CONFIG = {
+      topics: [
+        { id: 't1', label: 'Topic 1', max: 2 },
+        { id: 't2', label: 'Topic 2', max: 1 },
+        { id: 't3', label: 'Topic 3', max: 3 },
+        { id: 't4', label: 'Topic 4', max: 2 },
+        { id: 't5', label: 'Topic 5', max: 4 },
+      ],
+      passThresholdPct: 75, // pass/fail at or above this %
+      initialPrecision: 1   // 1, 0.5, 0.25, etc.
+    };
+
+    /* -------------------------
+       Build the UI
+       ------------------------- */
+    const grid = document.getElementById('formGrid');
+    const maxTotalEl = document.getElementById('maxTotal');
+    const candidateEl = document.getElementById('candidate');
+    const totalTextEl = document.getElementById('totalText');
+    const thresholdTextEl = document.getElementById('thresholdText');
+    const precisionSelect = document.getElementById('precision');
+    const precisionTextEl = document.getElementById('precisionText');
+    const progressEl = document.querySelector('.progress');
+    const barEl = document.getElementById('bar');
+    const badgeEl = document.getElementById('statusBadge');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const MAX_TOTAL = SCORECARD_CONFIG.topics.reduce((sum, t) => sum + t.max, 0);
+    maxTotalEl.textContent = MAX_TOTAL;
+    thresholdTextEl.textContent = SCORECARD_CONFIG.passThresholdPct + '%';
+
+    // Keep handles to inputs by topic id
+    const topicInputs = new Map();
+
+    function makeTopicRow(topic){
+      const wrapper = document.createElement('div');
+      wrapper.className = 'field';
+      wrapper.innerHTML = `
+        <div class="top">
+          <label for="${topic.id}-range">${topic.label}</label>
+          <span class="muted">Max ${topic.max}</span>
+        </div>
+        <div class="row">
+          <input id="${topic.id}-range" type="range" min="0" max="${topic.max}" step="${SCORECARD_CONFIG.initialPrecision}" value="0" aria-label="${topic.label} slider">
+          <input id="${topic.id}-num" type="number" min="0" max="${topic.max}" step="${SCORECARD_CONFIG.initialPrecision}" value="0" aria-label="${topic.label} value" inputmode="decimal">
+        </div>
+      `;
+      // Attach listeners and sync
+      const r = wrapper.querySelector(`#${topic.id}-range`);
+      const n = wrapper.querySelector(`#${topic.id}-num`);
+
+      function clamp(v){
+        const num = Number(v);
+        if (Number.isNaN(num)) return 0;
+        return Math.min(topic.max, Math.max(0, num));
+      }
+      function syncFromRange(){
+        n.value = r.value;
+        compute();
+      }
+      function syncFromNumber(){
+        n.value = clamp(n.value);
+        r.value = n.value;
+        compute();
+      }
+      r.addEventListener('input', syncFromRange);
+      n.addEventListener('input', syncFromNumber);
+
+      topicInputs.set(topic.id, { range: r, number: n, max: topic.max, label: topic.label });
+      return wrapper;
+    }
+
+    // Insert topic rows after the Candidate field
+    const frag = document.createDocumentFragment();
+    SCORECARD_CONFIG.topics.forEach(t => frag.appendChild(makeTopicRow(t)));
+    grid.appendChild(frag);
+
+    // Precision control
+    precisionSelect.value = String(SCORECARD_CONFIG.initialPrecision);
+    function setPrecision(step){
+      SCORECARD_CONFIG.topics.forEach(t => {
+        const pair = topicInputs.get(t.id);
+        pair.range.step = step;
+        pair.number.step = step;
+      });
+      precisionTextEl.textContent = step;
+    }
+    precisionSelect.addEventListener('change', () => setPrecision(precisionSelect.value));
+    setPrecision(precisionSelect.value);
+
+    /* -------------------------
+       Compute totals + UI state
+       ------------------------- */
+    function sumValues(){
+      let total = 0;
+      const values = [];
+      SCORECARD_CONFIG.topics.forEach(t => {
+        const val = Number(topicInputs.get(t.id).number.value) || 0;
+        total += val;
+        values.push(val);
+      });
+      return { total, values };
+    }
+
+    function formatPct(p){ return (Math.round(p * 10) / 10).toFixed(1); } // 1 decimal place
+
+    function compute(){
+      const { total, values } = sumValues();
+      const pct = (total / MAX_TOTAL) * 100;
+      const pctStr = formatPct(pct);
+      totalTextEl.textContent = `Total: ${total} / ${MAX_TOTAL} (${pctStr}%)`;
+
+      // Progress bar + ARIA
+      barEl.style.width = `${pct}%`;
+      progressEl.setAttribute('aria-valuenow', String(total));
+      progressEl.setAttribute('aria-valuemax', String(MAX_TOTAL));
+
+      // Badge
+      const passed = pct >= SCORECARD_CONFIG.passThresholdPct;
+      badgeEl.className = 'badge ' + (passed ? 'ok' : 'warn');
+      badgeEl.textContent = passed ? 'Pass' : 'Below threshold';
+    }
+
+    // Initial compute
+    compute();
+
+    /* -------------------------
+       CSV helpers
+       ------------------------- */
+    function csvEscape(value){
+      const s = String(value ?? '');
+      return /[";, \n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+    }
+    function rowAsCsv(){
+      const name = candidateEl.value.trim() || '—';
+      const vals = SCORECARD_CONFIG.topics.map(t => Number(topicInputs.get(t.id).number.value) || 0);
+      const total = vals.reduce((a,b)=>a+b,0);
+      const pct = (total / MAX_TOTAL) * 100;
+      const columns = [
+        'Candidate',
+        ...SCORECARD_CONFIG.topics.map(t => t.label),
+        'Total', 'Percent'
+      ];
+      const header = columns.map(csvEscape).join(',');
+      const row = [name, ...vals, total, `${formatPct(pct)}%`].map(csvEscape).join(',');
+      return { header, row };
+    }
+
+    // Clipboard + download
+    copyBtn.addEventListener('click', async () => {
+      const { header, row } = rowAsCsv();
+      const text = header + '\n' + row + '\n';
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'Copied ✓';
+        setTimeout(() => copyBtn.textContent = 'Copy CSV row', 1400);
+      }catch(err){
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.className = 'sr-only';
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        ta.remove();
+        copyBtn.textContent = 'Copied ✓';
+        setTimeout(() => copyBtn.textContent = 'Copy CSV row', 1400);
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const { header, row } = rowAsCsv();
+      const text = header + '\n' + row + '\n';
+      const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const name = (candidateEl.value.trim() || 'candidate').replace(/[^\w\-]+/g,'_');
+      a.href = url;
+      a.download = `score_${name}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      candidateEl.value = '';
+      SCORECARD_CONFIG.topics.forEach(t => {
+        const pair = topicInputs.get(t.id);
+        pair.range.value = 0;
+        pair.number.value = 0;
+      });
+      compute();
+    });
+  </script>
+</body>
+</html>
