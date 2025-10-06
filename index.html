@@ -6,195 +6,48 @@
   <title>Candidate Scorecard</title>
   <style>
     :root{
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #475569;
-      --accent: #2563eb;
-      --accent-weak: #e8f0ff;
-      --ok: #16a34a;
-      --warn: #ef4444;
-      --border: #e5e7eb;
-      --shadow: 0 10px 30px rgba(2, 8, 23, .06);
-      --radius: 14px;
+      --bg:#f6f7fb; --card:#fff; --text:#0f172a; --muted:#475569; --accent:#2563eb;
+      --accent-weak:#e8f0ff; --ok:#16a34a; --warn:#ef4444; --border:#e5e7eb;
+      --shadow:0 10px 30px rgba(2,8,23,.06); --radius:14px;
     }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg: #0b0f19;
-        --card: #121827;
-        --text: #e5e7eb;
-        --muted: #94a3b8;
-        --accent: #60a5fa;
-        --accent-weak: #0f172a;
-        --ok: #22c55e;
-        --warn: #f87171;
-        --border: #243143;
-        --shadow: 0 10px 30px rgba(0, 0, 0, .4);
-      }
+    @media (prefers-color-scheme:dark){
+      :root{ --bg:#0b0f19; --card:#121827; --text:#e5e7eb; --muted:#94a3b8; --accent:#60a5fa;
+             --accent-weak:#0f172a; --ok:#22c55e; --warn:#f87171; --border:#243143; --shadow:0 10px 30px rgba(0,0,0,.4);}
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
-      margin: 0;
-      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      color: var(--text);
-      background: radial-gradient(1200px 600px at 50% -60px, var(--accent-weak), transparent 60%), var(--bg);
-    }
-    .wrap{
-      max-width: 860px;
-      margin: 48px auto;
-      padding: 0 16px 32px;
-    }
-    .card{
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    header{
-      padding: 22px 22px 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    header h1{
-      margin: 0 0 4px;
-      font-size: 22px;
-      letter-spacing: .2px;
-    }
-    header p{
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .section{
-      padding: 20px 22px;
-    }
-    .grid{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px 20px;
-    }
-    @media (max-width: 720px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-    .field{
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: color-mix(in hsl, var(--card) 92%, transparent);
-    }
-    .field .top{
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    label{
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .muted{ color: var(--muted); font-size: 12px; }
-    .row{
-      display: grid;
-      grid-template-columns: 1fr minmax(96px, 120px);
-      gap: 10px;
-      align-items: center;
-    }
-    input[type="range"]{
-      width: 100%;
-      height: 28px;
-      appearance: none;
-      background: transparent;
-    }
-    input[type="range"]::-webkit-slider-runnable-track{
-      height: 6px;
-      background: linear-gradient(90deg, var(--accent), var(--accent));
-      border-radius: 999px;
-      box-shadow: inset 0 0 0 999px color-mix(in hsl, var(--accent) 12%, transparent);
-    }
-    input[type="range"]::-webkit-slider-thumb{
-      appearance: none;
-      margin-top: -6px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 2px solid var(--accent);
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
-    }
-    input[type="number"], input[type="text"], select{
-      width: 100%;
-      padding: 10px 11px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-size: 14px;
-    }
-    .stack{ display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: color-mix(in hsl, var(--card) 92%, transparent);
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 6px 10px; border-radius: 999px;
-      font-weight: 600; font-size: 12px;
-    }
-    .badge.ok{ background: color-mix(in hsl, var(--ok) 18%, transparent); color: var(--ok); }
-    .badge.warn{ background: color-mix(in hsl, var(--warn) 18%, transparent); color: var(--warn); }
-    .progress{
-      width: 100%;
-      height: 14px;
-      background: color-mix(in hsl, var(--accent) 10%, transparent);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .progress .bar{
-      height: 100%; width: 0%;
-      background: var(--accent);
-      transition: width .2s ease-out;
-    }
-    .totals{
-      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content: space-between;
-      padding: 16px 0 6px;
-    }
-    .totals .big{
-      font-size: 26px; font-weight: 800; letter-spacing: .2px;
-    }
-    .actions{
-      display:flex; flex-wrap: wrap; gap: 10px;
-      padding-top: 10px;
-    }
-    button{
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, color-mix(in hsl, var(--card) 98%, transparent), color-mix(in hsl, var(--card) 92%, transparent));
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 600;
-    }
-    button.primary{
-      background: var(--accent);
-      color: white;
-      border: 1px solid color-mix(in hsl, var(--accent) 75%, black);
-    }
-    footer{
-      padding: 16px 22px 22px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .sr-only{ position:absolute !important; left:-9999px !important; }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Helvetica Neue,Arial,Noto Sans,Apple Color Emoji,Segoe UI Emoji;
+         color:var(--text);background:radial-gradient(1200px 600px at 50% -60px,var(--accent-weak),transparent 60%),var(--bg)}
+    .wrap{max-width:860px;margin:48px auto;padding:0 16px 32px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    header{padding:22px 22px 10px;border-bottom:1px solid var(--border)}
+    header h1{margin:0 0 4px;font-size:22px;letter-spacing:.2px}
+    header p{margin:0;color:var(--muted);font-size:14px}
+    .section{padding:20px 22px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+    @media (max-width:720px){.grid{grid-template-columns:1fr}}
+    .field{display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--border);border-radius:12px;background:color-mix(in hsl,var(--card) 92%,transparent)}
+    .top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+    label{font-weight:600;font-size:14px}
+    .muted{color:var(--muted);font-size:12px}
+    .row{display:grid;grid-template-columns:1fr minmax(96px,120px);gap:10px;align-items:center}
+    input[type="range"]{width:100%;height:28px;appearance:none;background:transparent}
+    input[type="range"]::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,var(--accent),var(--accent));border-radius:999px;box-shadow:inset 0 0 0 999px color-mix(in hsl,var(--accent) 12%,transparent)}
+    input[type="range"]::-webkit-slider-thumb{appearance:none;margin-top:-6px;width:18px;height:18px;border-radius:50%;background:var(--card);border:2px solid var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.15)}
+    input[type="number"],input[type="text"],select{width:100%;padding:10px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px}
+    .stack{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:color-mix(in hsl,var(--card) 92%,transparent);font-size:12px;color:var(--muted)}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:600;font-size:12px}
+    .badge.ok{background:color-mix(in hsl,var(--ok) 18%,transparent);color:var(--ok)}
+    .badge.warn{background:color-mix(in hsl,var(--warn) 18%,transparent);color:var(--warn)}
+    .progress{width:100%;height:14px;background:color-mix(in hsl,var(--accent) 10%,transparent);border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    .progress .bar{height:100%;width:0%;background:var(--accent);transition:width .2s ease-out}
+    .totals{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:16px 0 6px}
+    .totals .big{font-size:26px;font-weight:800;letter-spacing:.2px}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;padding-top:10px}
+    button{padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:linear-gradient(180deg,color-mix(in hsl,var(--card) 98%,transparent),color-mix(in hsl,var(--card) 92%,transparent));color:var(--text);cursor:pointer;font-weight:600}
+    button.primary{background:var(--accent);color:#fff;border:1px solid color-mix(in hsl,var(--accent) 75%,black)}
+    footer{padding:16px 22px 22px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+    .sr-only{position:absolute !important;left:-9999px !important}
   </style>
 </head>
 <body>
@@ -202,7 +55,9 @@
     <div class="card" role="region" aria-labelledby="title">
       <header>
         <h1 id="title">Candidate Scorecard</h1>
-        <p>5 topics • Max total: <strong id="maxTotal">—</strong> points • Local only (no data leaves your browser)</p>
+        <p>
+          5 topics • Max total: <strong id="maxTotal">—</strong> points • Local only (no server)
+        </p>
       </header>
 
       <div class="section">
@@ -210,18 +65,20 @@
           <div class="field" style="grid-column:1/-1">
             <div class="top">
               <label for="candidate">Candidate</label>
-              <span class="pill">Precision:
-                <select id="precision" aria-label="Scoring precision">
-                  <option value="1">Whole points (1)</option>
-                  <option value="0.5">0.5</option>
-                  <option value="0.25">0.25</option>
-                </select>
+              <span class="stack">
+                <span class="pill">Precision:
+                  <select id="precision" aria-label="Scoring precision">
+                    <option value="1">Whole points (1)</option>
+                    <option value="0.5">0.5</option>
+                    <option value="0.25">0.25</option>
+                  </select>
+                </span>
+                <span class="pill">Key: <strong id="keyLabel">default</strong></span>
               </span>
             </div>
             <input id="candidate" type="text" placeholder="e.g., Jordan Lee" autocomplete="off" />
           </div>
-
-          <!-- Topic rows will be injected here -->
+          <!-- Topic rows injected here -->
         </div>
 
         <div class="totals" aria-live="polite" aria-atomic="true">
@@ -232,6 +89,7 @@
           <div class="stack">
             <span class="pill">Threshold: <strong id="thresholdText">75%</strong></span>
             <span class="pill">Precision: <span id="precisionText">1</span></span>
+            <span class="pill" id="savedInfo" style="display:none">Saved ✓</span>
           </div>
         </div>
 
@@ -240,21 +98,25 @@
         </div>
 
         <div class="actions">
-          <button class="primary" id="copyBtn">Copy CSV row</button>
+          <button class="primary" id="saveBtn">Save</button>
+          <button id="clearBtn">Clear Saved</button>
+          <button id="shareBtn">Copy Link with Scores</button>
+          <button id="copyBtn">Copy CSV row</button>
           <button id="downloadBtn">Download CSV row</button>
           <button id="resetBtn">Reset</button>
         </div>
       </div>
 
       <footer>
-        Tip: rename topic labels or change maxima inside the <strong>SCORECARD_CONFIG</strong> object in the code. Host this file and paste the URL into a Notion <em>Embed</em> block to use it inside your workspace.
+        Tip: use a unique <strong>?key=...</strong> in your embed URL for each Notion page, e.g.
+        <em>...?key=Candidate_Maya</em>. “Save” keeps scores in this browser; “Copy Link with Scores” makes a shareable/embeddable URL that opens with the saved values.
       </footer>
     </div>
   </div>
 
   <script>
     /* -------------------------
-       Configuration (edit me)
+       Configuration
        ------------------------- */
     const SCORECARD_CONFIG = {
       topics: [
@@ -264,38 +126,69 @@
         { id: 't4', label: 'Topic 4', max: 2 },
         { id: 't5', label: 'Topic 5', max: 4 },
       ],
-      passThresholdPct: 75, // pass/fail at or above this %
-      initialPrecision: 1   // 1, 0.5, 0.25, etc.
+      passThresholdPct: 75,
+      initialPrecision: 1
     };
+
+    /* -------------------------
+       Utilities
+       ------------------------- */
+    const $ = s => document.querySelector(s);
+    function sanitizeKey(k){ return (k||'default').toString().replace(/[^A-Za-z0-9_.\-:]/g,'_').slice(0,64); }
+
+    const url = new URL(window.location.href);
+    const urlKey = sanitizeKey(url.searchParams.get('key') || 'default');
+    const stateParam = url.searchParams.get('state'); // base64-encoded snapshot (optional)
+    const STORAGE_KEY = `scorecard::${urlKey}`; // per-embed separation
+    $('#keyLabel').textContent = urlKey;
+
+    function b64encode(obj){
+      const json = JSON.stringify(obj);
+      const enc = new TextEncoder().encode(json);
+      // base64
+      let s = '';
+      enc.forEach(b=>s+=String.fromCharCode(b));
+      return btoa(s);
+    }
+    function b64decodeToObj(str){
+      const bin = atob(str);
+      const bytes = new Uint8Array([...bin].map(ch=>ch.charCodeAt(0)));
+      const json = new TextDecoder().decode(bytes);
+      return JSON.parse(json);
+    }
 
     /* -------------------------
        Build the UI
        ------------------------- */
-    const grid = document.getElementById('formGrid');
-    const maxTotalEl = document.getElementById('maxTotal');
-    const candidateEl = document.getElementById('candidate');
-    const totalTextEl = document.getElementById('totalText');
-    const thresholdTextEl = document.getElementById('thresholdText');
-    const precisionSelect = document.getElementById('precision');
-    const precisionTextEl = document.getElementById('precisionText');
-    const progressEl = document.querySelector('.progress');
-    const barEl = document.getElementById('bar');
-    const badgeEl = document.getElementById('statusBadge');
-    const copyBtn = document.getElementById('copyBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const resetBtn = document.getElementById('resetBtn');
+    const grid = $('#formGrid');
+    const maxTotalEl = $('#maxTotal');
+    const candidateEl = $('#candidate');
+    const totalTextEl = $('#totalText');
+    const thresholdTextEl = $('#thresholdText');
+    const precisionSelect = $('#precision');
+    const precisionTextEl = $('#precisionText');
+    const progressEl = $('.progress');
+    const barEl = $('#bar');
+    const badgeEl = $('#statusBadge');
+    const savedInfo = $('#savedInfo');
+
+    const saveBtn = $('#saveBtn');
+    const clearBtn = $('#clearBtn');
+    const shareBtn = $('#shareBtn');
+    const copyBtn = $('#copyBtn');
+    const downloadBtn = $('#downloadBtn');
+    const resetBtn = $('#resetBtn');
 
     const MAX_TOTAL = SCORECARD_CONFIG.topics.reduce((sum, t) => sum + t.max, 0);
     maxTotalEl.textContent = MAX_TOTAL;
     thresholdTextEl.textContent = SCORECARD_CONFIG.passThresholdPct + '%';
 
-    // Keep handles to inputs by topic id
     const topicInputs = new Map();
 
     function makeTopicRow(topic){
-      const wrapper = document.createElement('div');
-      wrapper.className = 'field';
-      wrapper.innerHTML = `
+      const el = document.createElement('div');
+      el.className = 'field';
+      el.innerHTML = `
         <div class="top">
           <label for="${topic.id}-range">${topic.label}</label>
           <span class="muted">Max ${topic.max}</span>
@@ -305,32 +198,20 @@
           <input id="${topic.id}-num" type="number" min="0" max="${topic.max}" step="${SCORECARD_CONFIG.initialPrecision}" value="0" aria-label="${topic.label} value" inputmode="decimal">
         </div>
       `;
-      // Attach listeners and sync
-      const r = wrapper.querySelector(`#${topic.id}-range`);
-      const n = wrapper.querySelector(`#${topic.id}-num`);
-
+      const r = el.querySelector(`#${topic.id}-range`);
+      const n = el.querySelector(`#${topic.id}-num`);
       function clamp(v){
-        const num = Number(v);
-        if (Number.isNaN(num)) return 0;
+        const num = Number(v); if (Number.isNaN(num)) return 0;
         return Math.min(topic.max, Math.max(0, num));
       }
-      function syncFromRange(){
-        n.value = r.value;
-        compute();
-      }
-      function syncFromNumber(){
-        n.value = clamp(n.value);
-        r.value = n.value;
-        compute();
-      }
+      function syncFromRange(){ n.value = r.value; compute(); }
+      function syncFromNumber(){ n.value = clamp(n.value); r.value = n.value; compute(); }
       r.addEventListener('input', syncFromRange);
       n.addEventListener('input', syncFromNumber);
-
       topicInputs.set(topic.id, { range: r, number: n, max: topic.max, label: topic.label });
-      return wrapper;
+      return el;
     }
 
-    // Insert topic rows after the Candidate field
     const frag = document.createDocumentFragment();
     SCORECARD_CONFIG.topics.forEach(t => frag.appendChild(makeTopicRow(t)));
     grid.appendChild(frag);
@@ -349,64 +230,143 @@
     setPrecision(precisionSelect.value);
 
     /* -------------------------
-       Compute totals + UI state
+       Compute + UI
        ------------------------- */
-    function sumValues(){
-      let total = 0;
-      const values = [];
-      SCORECARD_CONFIG.topics.forEach(t => {
-        const val = Number(topicInputs.get(t.id).number.value) || 0;
-        total += val;
-        values.push(val);
-      });
-      return { total, values };
+    function getValues(){
+      return SCORECARD_CONFIG.topics.map(t => Number(topicInputs.get(t.id).number.value) || 0);
     }
-
-    function formatPct(p){ return (Math.round(p * 10) / 10).toFixed(1); } // 1 decimal place
+    function setValues(arr){
+      SCORECARD_CONFIG.topics.forEach((t, i) => {
+        const v = Number(arr?.[i]) || 0;
+        const pair = topicInputs.get(t.id);
+        pair.number.value = Math.min(t.max, Math.max(0, v));
+        pair.range.value = pair.number.value;
+      });
+    }
+    const oneDecimal = p => (Math.round(p*10)/10).toFixed(1);
 
     function compute(){
-      const { total, values } = sumValues();
+      const vals = getValues();
+      const total = vals.reduce((a,b)=>a+b,0);
       const pct = (total / MAX_TOTAL) * 100;
-      const pctStr = formatPct(pct);
-      totalTextEl.textContent = `Total: ${total} / ${MAX_TOTAL} (${pctStr}%)`;
-
-      // Progress bar + ARIA
+      totalTextEl.textContent = `Total: ${total} / ${MAX_TOTAL} (${oneDecimal(pct)}%)`;
       barEl.style.width = `${pct}%`;
       progressEl.setAttribute('aria-valuenow', String(total));
       progressEl.setAttribute('aria-valuemax', String(MAX_TOTAL));
-
-      // Badge
       const passed = pct >= SCORECARD_CONFIG.passThresholdPct;
       badgeEl.className = 'badge ' + (passed ? 'ok' : 'warn');
       badgeEl.textContent = passed ? 'Pass' : 'Below threshold';
     }
 
-    // Initial compute
-    compute();
+    /* -------------------------
+       Save / Load (local)
+       ------------------------- */
+    function collectState(){
+      return {
+        version: 1,
+        key: urlKey,
+        candidate: candidateEl.value || '',
+        precision: precisionSelect.value,
+        values: getValues(),
+        savedAt: Date.now()
+      };
+    }
+    function applyState(state){
+      if (!state) return;
+      candidateEl.value = state.candidate || '';
+      precisionSelect.value = state.precision || precisionSelect.value;
+      setPrecision(precisionSelect.value);
+      setValues(state.values || []);
+      compute();
+      savedInfo.style.display = 'inline-flex';
+      savedInfo.textContent = 'Saved ✓';
+    }
+    function saveLocal(){
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+        savedInfo.style.display = 'inline-flex';
+        savedInfo.textContent = 'Saved ✓';
+        saveBtn.textContent = 'Saved ✓';
+        setTimeout(()=>{ saveBtn.textContent='Save'; }, 1200);
+      }catch(e){
+        alert('Could not save locally (storage may be blocked). Use “Copy Link with Scores” instead.');
+      }
+    }
+    function loadLocal(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw){ applyState(JSON.parse(raw)); }
+      }catch(e){ /* ignore */ }
+    }
+    function clearLocal(){
+      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+      savedInfo.style.display = 'none';
+    }
 
     /* -------------------------
-       CSV helpers
+       Save / Load (URL link)
        ------------------------- */
+    function buildShareUrl(){
+      const snapshot = { c: candidateEl.value || '', p: precisionSelect.value, v: getValues() };
+      const u = new URL(window.location.href);
+      u.searchParams.set('key', urlKey);
+      u.searchParams.set('state', b64encode(snapshot));
+      return u.toString();
+    }
+    function tryLoadFromStateParam(){
+      if (!stateParam) return false;
+      try{
+        const obj = b64decodeToObj(stateParam);
+        // Apply snapshot (doesn't change config)
+        candidateEl.value = obj.c || '';
+        precisionSelect.value = obj.p || precisionSelect.value;
+        setPrecision(precisionSelect.value);
+        setValues(obj.v || []);
+        compute();
+        // Also write to local so future visits restore
+        saveLocal();
+        return true;
+      }catch(e){
+        console.warn('Bad state param', e);
+        return false;
+      }
+    }
+
+    /* -------------------------
+       Buttons
+       ------------------------- */
+    saveBtn.addEventListener('click', saveLocal);
+    clearBtn.addEventListener('click', () => { clearLocal(); alert('Saved data cleared for key: ' + urlKey); });
+    shareBtn.addEventListener('click', async () => {
+      const link = buildShareUrl();
+      try{
+        await navigator.clipboard.writeText(link);
+        shareBtn.textContent = 'Link copied ✓';
+        setTimeout(()=> shareBtn.textContent = 'Copy Link with Scores', 1400);
+      }catch{
+        const ta = document.createElement('textarea');
+        ta.className = 'sr-only'; ta.value = link; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove();
+        shareBtn.textContent = 'Link copied ✓';
+        setTimeout(()=> shareBtn.textContent = 'Copy Link with Scores', 1400);
+      }
+    });
+
+    /* CSV (unchanged from before) */
     function csvEscape(value){
       const s = String(value ?? '');
       return /[";, \n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
     }
     function rowAsCsv(){
       const name = candidateEl.value.trim() || '—';
-      const vals = SCORECARD_CONFIG.topics.map(t => Number(topicInputs.get(t.id).number.value) || 0);
+      const vals = getValues();
       const total = vals.reduce((a,b)=>a+b,0);
       const pct = (total / MAX_TOTAL) * 100;
-      const columns = [
-        'Candidate',
-        ...SCORECARD_CONFIG.topics.map(t => t.label),
-        'Total', 'Percent'
-      ];
+      const columns = ['Candidate', ...SCORECARD_CONFIG.topics.map(t => t.label), 'Total', 'Percent'];
       const header = columns.map(csvEscape).join(',');
-      const row = [name, ...vals, total, `${formatPct(pct)}%`].map(csvEscape).join(',');
+      const row = [name, ...vals, total, `${oneDecimal(pct)}%`].map(csvEscape).join(',');
       return { header, row };
     }
-
-    // Clipboard + download
     copyBtn.addEventListener('click', async () => {
       const { header, row } = rowAsCsv();
       const text = header + '\n' + row + '\n';
@@ -414,19 +374,14 @@
         await navigator.clipboard.writeText(text);
         copyBtn.textContent = 'Copied ✓';
         setTimeout(() => copyBtn.textContent = 'Copy CSV row', 1400);
-      }catch(err){
-        // Fallback
+      }catch{
         const ta = document.createElement('textarea');
-        ta.className = 'sr-only';
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select(); document.execCommand('copy');
-        ta.remove();
+        ta.className = 'sr-only'; ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove();
         copyBtn.textContent = 'Copied ✓';
         setTimeout(() => copyBtn.textContent = 'Copy CSV row', 1400);
       }
     });
-
     downloadBtn.addEventListener('click', () => {
       const { header, row } = rowAsCsv();
       const text = header + '\n' + row + '\n';
@@ -434,23 +389,24 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       const name = (candidateEl.value.trim() || 'candidate').replace(/[^\w\-]+/g,'_');
-      a.href = url;
-      a.download = `score_${name}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      a.href = url; a.download = `score_${name}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     });
 
     resetBtn.addEventListener('click', () => {
       candidateEl.value = '';
       SCORECARD_CONFIG.topics.forEach(t => {
         const pair = topicInputs.get(t.id);
-        pair.range.value = 0;
-        pair.number.value = 0;
+        pair.range.value = 0; pair.number.value = 0;
       });
       compute();
     });
+
+    /* -------------------------
+       Initial load
+       ------------------------- */
+    compute();
+    // Try URL state first (shareable), else local
+    if (!tryLoadFromStateParam()) { loadLocal(); }
   </script>
 </body>
 </html>
